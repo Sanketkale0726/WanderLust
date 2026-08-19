@@ -122,9 +122,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ==========================================
-// 7. SERVER INITIALIZATION
-// ==========================================
+
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Wanderlust Server is soaring on http://localhost:${PORT}`);
