@@ -1,0 +1,179 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-9">
+      
+      <div class="card shadow-lg border-0 rounded-4 p-4 p-md-5">
+        
+        <div class="text-center mb-4">
+          <div class="badge bg-danger-subtle text-danger text-uppercase px-3 py-2 rounded-pill fw-bold mb-2">Host Portal</div>
+          <h2 class="fw-bold">Create a New Luxury Stay</h2>
+          <p class="text-muted">Fill in the details below to publish your property on Wanderlust.</p>
+        </div>
+
+        <form action="/listings" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+          
+          <!-- 1. BASIC INFORMATION -->
+          <h5 class="fw-bold mb-3 text-dark border-bottom pb-2">
+            <i class="fa-solid fa-hotel text-danger me-2"></i> 1. Basic Details
+          </h5>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Property Title / Name <span class="text-danger">*</span></label>
+            <input type="text" name="listings[title]" class="form-control form-control-lg rounded-3" placeholder="e.g. Scenic Oceanfront Villa with Private Infinity Pool" required minlength="3">
+            <div class="invalid-feedback">Please enter an attractive property title.</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Description <span class="text-danger">*</span></label>
+            <textarea name="listings[description]" class="form-control rounded-3" rows="4" placeholder="Describe the ambiance, view, architecture, and what makes your stay unique..." required minlength="10"></textarea>
+            <div class="invalid-feedback">Please write a descriptive summary (minimum 10 characters).</div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Category <span class="text-danger">*</span></label>
+              <select name="listings[category]" class="form-select rounded-3" required>
+                <option value="trending" selected>Trending</option>
+                <option value="beachfront">Beachfront</option>
+                <option value="villas">Villas</option>
+                <option value="mountains">Mountains</option>
+                <option value="pools">Amazing Pools</option>
+                <option value="cabins">Cabins</option>
+                <option value="iconic">Iconic Cities</option>
+                <option value="luxury">Luxe Stays</option>
+                <option value="castles">Castles</option>
+                <option value="farms">Farms & Countryside</option>
+                <option value="camping">Camping & Glamping</option>
+                <option value="rooms">Private Rooms</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Upload Property Photos <span class="text-danger">*</span></label>
+              <input type="file" name="images" class="form-control rounded-3" multiple accept="image/*" required>
+              <small class="text-muted">You can select up to 5 photos (JPG, PNG, WebP)</small>
+            </div>
+          </div>
+
+          <!-- 2. LOCATION & INTERACTIVE PINPOINT MAP -->
+          <h5 class="fw-bold mb-3 text-dark border-bottom pb-2">
+            <i class="fa-solid fa-map-location-dot text-danger me-2"></i> 2. Location & Map Pinpoint
+          </h5>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">City / Region <span class="text-danger">*</span></label>
+              <input type="text" name="listings[location]" id="locationInput" class="form-control rounded-3" placeholder="e.g. Goa, Manali, Mumbai" required>
+              <div class="invalid-feedback">City is required.</div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Country <span class="text-danger">*</span></label>
+              <input type="text" name="listings[country]" class="form-control rounded-3" placeholder="e.g. India, UAE, France" required>
+              <div class="invalid-feedback">Country is required.</div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Full Address / Landmark</label>
+              <input type="text" name="listings[address]" class="form-control rounded-3" placeholder="e.g. Sunset Road, Candolim">
+            </div>
+          </div>
+
+          <!-- MAP PINPOINT PICKER -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold small text-muted">
+              <i class="fa-solid fa-crosshairs text-danger me-1"></i> Interactive Map Pin: Click anywhere on the map to set exact property coordinates.
+            </label>
+            <div id="pickerMap" class="rounded-4 border shadow-sm" style="height: 280px;"></div>
+            <div class="row g-2 mt-2">
+              <div class="col-6">
+                <input type="number" step="any" name="lat" id="pickerLat" class="form-control form-control-sm" placeholder="Latitude" value="18.5204" required>
+              </div>
+              <div class="col-6">
+                <input type="number" step="any" name="lng" id="pickerLng" class="form-control form-control-sm" placeholder="Longitude" value="73.8567" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. PRICING & CAPACITY -->
+          <h5 class="fw-bold mb-3 text-dark border-bottom pb-2">
+            <i class="fa-solid fa-indian-rupee-sign text-danger me-2"></i> 3. Pricing & Capacity
+          </h5>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Price per night (₹) <span class="text-danger">*</span></label>
+              <input type="number" name="listings[price]" class="form-control rounded-3" placeholder="3500" required min="100">
+              <div class="invalid-feedback">Enter a valid nightly price.</div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Cleaning Fee (₹)</label>
+              <input type="number" name="listings[cleaningFee]" class="form-control rounded-3" placeholder="499" value="499" min="0">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Service Fee (₹)</label>
+              <input type="number" name="listings[serviceFee]" class="form-control rounded-3" placeholder="299" value="299" min="0">
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-3">
+              <label class="form-label fw-semibold small">Max Guests</label>
+              <input type="number" name="listings[maxGuests]" class="form-control form-control-sm rounded-3" value="2" min="1">
+            </div>
+            <div class="col-3">
+              <label class="form-label fw-semibold small">Bedrooms</label>
+              <input type="number" name="listings[bedrooms]" class="form-control form-control-sm rounded-3" value="1" min="1">
+            </div>
+            <div class="col-3">
+              <label class="form-label fw-semibold small">Beds</label>
+              <input type="number" name="listings[beds]" class="form-control form-control-sm rounded-3" value="1" min="1">
+            </div>
+            <div class="col-3">
+              <label class="form-label fw-semibold small">Bathrooms</label>
+              <input type="number" name="listings[bathrooms]" class="form-control form-control-sm rounded-3" value="1" min="1">
+            </div>
+          </div>
+
+          <!-- 4. AMENITIES -->
+          <h5 class="fw-bold mb-3 text-dark border-bottom pb-2">
+            <i class="fa-solid fa-list-check text-danger me-2"></i> 4. Amenities
+          </h5>
+
+          <div class="row g-3 mb-4">
+            <% const availableAmenities = [
+              "Fast Wi-Fi", "Air Conditioning", "Private Swimming Pool", "Free Parking",
+              "Kitchen & Utensils", "Dedicated Workspace", "HD TV with Netflix", "Beach Access",
+              "Hot Tub / Jacuzzi", "Mountain View", "Balcony / Terrace", "EV Charger",
+              "Barbeque Grill", "Washing Machine", "Pet Friendly", "24/7 Security"
+            ]; %>
+            <% for(let a of availableAmenities) { %>
+              <div class="col-6 col-md-3">
+                <div class="form-check custom-amenity-check p-2 rounded-3 border">
+                  <input class="form-check-input ms-1" type="checkbox" name="listings[amenities][]" value="<%= a %>" id="amenity_<%= a.replace(/\s+/g, '') %>">
+                  <label class="form-check-label ms-2 small fw-medium" for="amenity_<%= a.replace(/\s+/g, '') %>"><%= a %></label>
+                </div>
+              </div>
+            <% } %>
+          </div>
+
+          <!-- SUBMIT BUTTON -->
+          <div class="text-center pt-3 border-top">
+            <button type="submit" class="btn btn-danger btn-lg rounded-pill px-5 fw-bold shadow">
+              <i class="fa-solid fa-cloud-arrow-up me-2"></i> Publish Listing
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="/js/map.js"></script>

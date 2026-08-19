@@ -1,0 +1,104 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container py-5">
+  <div class="row g-4 justify-content-center">
+    
+    <!-- LEFT: PROFILE CARD -->
+    <div class="col-12 col-md-4">
+      <div class="card shadow-lg border-0 rounded-4 p-4 text-center">
+        
+        <div class="position-relative d-inline-block mx-auto mb-3">
+          <img src="<%= (user.avatar && user.avatar.url) ? user.avatar.url : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80' %>" 
+               class="rounded-circle shadow border border-3 border-danger-subtle" 
+               style="width: 130px; height: 130px; object-fit: cover;">
+          <span class="badge position-absolute bottom-0 end-0 bg-danger text-uppercase px-2 py-1 rounded-pill"><%= user.role %></span>
+        </div>
+
+        <h4 class="fw-bold mb-0"><%= user.username %></h4>
+        <p class="text-muted small mb-3"><%= user.email %></p>
+
+        <p class="text-secondary small fst-italic px-2">"<%= user.bio || 'Wanderlust explorer seeking unique stays.' %>"</p>
+
+        <hr>
+
+        <!-- STATS BADGES -->
+        <div class="row g-2 text-center">
+          <div class="col-4">
+            <div class="p-2 bg-light rounded-3">
+              <div class="fw-bold fs-5 text-danger"><%= myTripsCount || 0 %></div>
+              <div class="text-muted fs-xxs text-uppercase">Trips</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="p-2 bg-light rounded-3">
+              <div class="fw-bold fs-5 text-dark"><%= myListingsCount || 0 %></div>
+              <div class="text-muted fs-xxs text-uppercase">Listings</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="p-2 bg-light rounded-3">
+              <div class="fw-bold fs-5 text-danger"><%= user.wishlist ? user.wishlist.length : 0 %></div>
+              <div class="text-muted fs-xxs text-uppercase">Wishlist</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-2">
+          <% if (user.role === 'owner' || user.role === 'admin') { %>
+            <a href="/bookings/manage" class="btn btn-outline-danger w-100 rounded-pill mb-2">
+              <i class="fa-solid fa-chart-line me-1"></i> Host Dashboard
+            </a>
+          <% } %>
+          <a href="/bookings/my-trips" class="btn btn-outline-dark w-100 rounded-pill">
+            <i class="fa-solid fa-suitcase-rolling me-1"></i> View My Trips
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT: EDIT PROFILE FORM -->
+    <div class="col-12 col-md-8">
+      <div class="card shadow-lg border-0 rounded-4 p-4 p-md-5">
+        
+        <h4 class="fw-bold mb-1">Edit Account Profile</h4>
+        <p class="text-muted small mb-4">Keep your personal details and host contact information up to date.</p>
+
+        <form action="/profile" method="POST" enctype="multipart/form-data">
+          
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Full Name / Username</label>
+            <input type="text" name="username" class="form-control rounded-3" value="<%= user.username %>" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Email Address (Read-only)</label>
+            <input type="email" class="form-control rounded-3 bg-light text-muted" value="<%= user.email %>" readonly disabled>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Phone Number</label>
+            <input type="tel" name="phone" class="form-control rounded-3" value="<%= user.phone || '' %>" placeholder="+91 98765 43210">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">About / Bio</label>
+            <textarea name="bio" class="form-control rounded-3" rows="3" placeholder="Tell hosts and guests a bit about yourself..."><%= user.bio || '' %></textarea>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold small">Update Avatar / Profile Photo</label>
+            <input type="file" name="avatar" class="form-control rounded-3" accept="image/*">
+          </div>
+
+          <button type="submit" class="btn btn-danger rounded-pill px-5 py-2 fw-bold shadow">
+            Save Profile Changes
+          </button>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>

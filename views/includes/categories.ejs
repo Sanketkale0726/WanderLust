@@ -1,0 +1,82 @@
+<div class="categories-bar-wrapper">
+  <div class="container-fluid px-3 px-lg-5">
+    <div class="d-flex align-items-center justify-content-between gap-3">
+      
+      <!-- CATEGORY HORIZONTAL SCROLLER -->
+      <div class="categories-container flex-grow-1" id="categoriesScroll">
+        
+        <a href="/listings" class="category-item <%= (typeof currentCategory === 'undefined' || currentCategory === 'all') ? 'active' : '' %>">
+          <i class="fa-solid fa-fire"></i>
+          <span>Trending</span>
+        </a>
+
+        <a href="/listings?category=beachfront" class="category-item <%= (typeof currentCategory !== 'undefined' && currentCategory === 'beachfront') ? 'active' : '' %>">
+          <i class="fa-solid fa-umbrella-beach"></i>
+          <span>Beachfront</span>
+        </a>
+
+        <a href="/listings?category=villas" class="category-item <%= (typeof currentCategory !== 'undefined' && currentCategory === 'villas') ? 'active' : '' %>">
+          <i class="fa-solid fa-house-chimney-window"></i>
+          <span>Villas</span>
+        </a>
+
+        <a href="/listings?category=mountains" class="category-item <%= (typeof currentCategory !== 'undefined' && currentCategory === 'mountains') ? 'active' : '' %>">
+          <i class="fa-solid fa-mountain-sun"></i>
+          <span>Mountains</span>
+        </a>
+
+        <a href="/listings?category=pools" class="category-item <%= (typeof currentCategory !== 'undefined' && currentCategory === 'pools') ? 'active' : '' %>">
+          <i class="fa-solid fa-water-ladder"></i>
+          <span>Amazing Pools</span>
+        </a>
+
+        <a href="/listings?category=cabins" class="category-item <%= (typeof currentCategory !== 'undefined' && currentCategory === 'cabins') ? 'active' : '' %>">
+          <i class="fa-solid fa-tree"></i>
+          <span>Cabins</span>
+        </a>
+
+        <a href="/listings?category=iconic" class="category-item <%= (typeof currentCategory !== 'undefined' && currentCategory === 'iconic') ? 'active' : '' %>">
+          <i class="fa-solid fa-city"></i>
+          <span>Iconic Cities</span>
+        </a>
+
+        <a href="/listings?category=luxury" class="category-item <%= (typeof currentCategory !== 'undefined' && currentCategory === 'luxury') ? 'active' : '' %>">
+          <i class="fa-solid fa-gem"></i>
+          <span>Luxe</span>
+        </a>
+
+        <a href="/listings?category=castles" class="category-item <%= (typeof currentCategory !== 'undefined' && currentCategory === 'castles') ? 'active' : '' %>">
+          <i class="fa-brands fa-fort-awesome"></i>
+          <span>Castles</span>
+        </a>
+
+        <a href="/listings?category=farms" class="category-item <%= (typeof currentCategory !== 'undefined' && currentCategory === 'farms') ? 'active' : '' %>">
+          <i class="fa-solid fa-tractor"></i>
+          <span>Farms</span>
+        </a>
+
+        <a href="/listings?category=camping" class="category-item <%= (typeof currentCategory !== 'undefined' && currentCategory === 'camping') ? 'active' : '' %>">
+          <i class="fa-solid fa-campground"></i>
+          <span>Camping</span>
+        </a>
+
+        <a href="/listings?category=rooms" class="category-item <%= (typeof currentCategory !== 'undefined' && currentCategory === 'rooms') ? 'active' : '' %>">
+          <i class="fa-solid fa-bed"></i>
+          <span>Rooms</span>
+        </a>
+
+      </div>
+
+      <!-- TAX TOGGLE SWITCH (REAL-TIME JS PRICE CALCULATION) -->
+      <div class="tax-toggle-box d-none d-lg-flex align-items-center">
+        <div class="form-check form-switch d-flex align-items-center gap-2 m-0 p-0">
+          <label class="form-check-label tax-toggle-label" for="taxSwitch">
+            Display total with 18% GST
+          </label>
+          <input class="form-check-input tax-switch-input m-0" type="checkbox" role="switch" id="taxSwitch">
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

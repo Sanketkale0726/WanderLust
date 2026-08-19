@@ -1,0 +1,241 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container py-5">
+  <div class="row justify-content-center g-5">
+    
+    <!-- LEFT: PAYMENT DETAILS & INTERACTIVE CARD -->
+    <div class="col-12 col-lg-7">
+      
+      <div class="card shadow-lg border-0 rounded-4 p-4 p-md-5">
+        
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <a href="/listings/<%= listing._id %>" class="btn btn-outline-dark btn-sm rounded-circle" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-arrow-left"></i>
+          </a>
+          <div>
+            <h3 class="fw-bold mb-0">Confirm & Pay</h3>
+            <p class="text-muted small mb-0">Complete your reservation securely with Wanderlust Pay.</p>
+          </div>
+        </div>
+
+        <!-- PAYMENT METHOD TABS -->
+        <ul class="nav nav-pills nav-fill mb-4 gap-2 p-1 bg-light rounded-pill border" id="paymentTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active rounded-pill fw-semibold" id="card-tab" data-bs-toggle="pill" data-bs-target="#cardTabPane" type="button" role="tab">
+              <i class="fa-solid fa-credit-card me-1"></i> Card
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link rounded-pill fw-semibold" id="upi-tab" data-bs-toggle="pill" data-bs-target="#upiTabPane" type="button" role="tab">
+              <i class="fa-solid fa-qrcode me-1"></i> UPI / QR
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link rounded-pill fw-semibold" id="razorpay-tab" data-bs-toggle="pill" data-bs-target="#razorpayTabPane" type="button" role="tab">
+              <i class="fa-solid fa-bolt text-warning me-1"></i> Razorpay Instant
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="paymentTabContent">
+          
+          <!-- TAB 1: CREDIT CARD -->
+          <div class="tab-pane fade show active" id="cardTabPane" role="tabpanel">
+            
+            <!-- 3D VIRTUAL CARD PREVIEW -->
+            <div class="virtual-card-box mb-4 p-4 rounded-4 shadow text-white">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <span class="fs-5 fw-bold letter-spacing-1">Wanderlust Black</span>
+                <i class="fa-brands fa-cc-visa fa-2x"></i>
+              </div>
+              <div class="fs-4 fw-bold letter-spacing-2 mb-3" id="cardDisplayNumber">•••• •••• •••• 4242</div>
+              <div class="d-flex justify-content-between text-uppercase small">
+                <div>
+                  <div class="text-white-50 fs-xxs">Card Holder</div>
+                  <div class="fw-bold" id="cardDisplayName"><%= currentUser ? currentUser.username : 'GUEST TRAVELER' %></div>
+                </div>
+                <div>
+                  <div class="text-white-50 fs-xxs">Expires</div>
+                  <div class="fw-bold" id="cardDisplayExpiry">12/28</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARD FORM -->
+            <form action="/payment" method="POST" id="cardPayForm">
+              <input type="hidden" name="paymentMethod" value="Credit/Debit Card">
+
+              <div class="mb-3">
+                <label class="form-label fw-semibold small">Card Number</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-white border-end-0"><i class="fa-regular fa-credit-card text-muted"></i></span>
+                  <input type="text" id="cardNumberInput" class="form-control border-start-0" placeholder="4242 4242 4242 4242" maxlength="19" required>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-semibold small">Cardholder Name</label>
+                <input type="text" id="cardNameInput" class="form-control" placeholder="Full name as on card" value="<%= currentUser ? currentUser.username : '' %>" required>
+              </div>
+
+              <div class="row g-3 mb-4">
+                <div class="col-6">
+                  <label class="form-label fw-semibold small">Expiry Date</label>
+                  <input type="text" id="cardExpiryInput" class="form-control" placeholder="MM/YY" maxlength="5" required>
+                </div>
+                <div class="col-6">
+                  <label class="form-label fw-semibold small">CVV</label>
+                  <input type="password" class="form-control" placeholder="•••" maxlength="4" required>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-gradient-danger w-100 py-3 rounded-pill fw-bold fs-5 shadow">
+                Pay ₹ <%= bookingData.totalPrice.toLocaleString("en-IN") %> & Confirm
+              </button>
+            </form>
+
+          </div>
+
+          <!-- TAB 2: UPI / QR -->
+          <div class="tab-pane fade text-center py-4" id="upiTabPane" role="tabpanel">
+            <div class="qr-code-box p-3 bg-white d-inline-block rounded-4 shadow-sm border mb-3">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=wanderlust@upi&pn=WanderlustStays&am=<%= bookingData.totalPrice %>&cu=INR" alt="UPI QR Code" class="img-fluid rounded-3">
+            </div>
+            <h6 class="fw-bold mb-1">Scan & Pay ₹ <%= bookingData.totalPrice.toLocaleString("en-IN") %></h6>
+            <p class="text-muted small">Scan with Google Pay, PhonePe, Paytm, or BHIM</p>
+
+            <form action="/payment" method="POST" class="mt-4">
+              <input type="hidden" name="paymentMethod" value="UPI Instant">
+              <button type="submit" class="btn btn-success w-100 py-3 rounded-pill fw-bold fs-6 shadow-sm">
+                <i class="fa-solid fa-circle-check me-2"></i> I have completed the UPI payment
+              </button>
+            </form>
+          </div>
+
+          <!-- TAB 3: RAZORPAY INSTANT -->
+          <div class="tab-pane fade text-center py-4" id="razorpayTabPane" role="tabpanel">
+            <div class="p-4 bg-light rounded-4 mb-3 border">
+              <i class="fa-solid fa-shield-halved fa-3x text-primary mb-3"></i>
+              <h5 class="fw-bold">Razorpay 1-Click Checkout</h5>
+              <p class="text-muted small">Official Razorpay test/live gateway sandbox with instant automated verification.</p>
+            </div>
+
+            <form action="/payment" method="POST">
+              <input type="hidden" name="paymentMethod" value="Razorpay Online Gateway">
+              <input type="hidden" name="razorpayPaymentId" value="pay_rzp_<%= Date.now() %>">
+              <button type="submit" class="btn btn-primary w-100 py-3 rounded-pill fw-bold fs-6 shadow">
+                Launch Razorpay Portal (₹ <%= bookingData.totalPrice.toLocaleString("en-IN") %>)
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+        <div class="d-flex align-items-center justify-content-center gap-2 text-muted small mt-4 pt-3 border-top">
+          <i class="fa-solid fa-lock text-success"></i> 256-Bit Bank Grade SSL Encrypted Checkout
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT: ORDER SUMMARY CARD -->
+    <div class="col-12 col-lg-5">
+      <div class="card shadow-lg border-0 rounded-4 p-4 sticky-top" style="top: 100px;">
+        
+        <h5 class="fw-bold mb-3 border-bottom pb-2">Trip Summary</h5>
+
+        <!-- LISTING PREVIEW -->
+        <div class="d-flex gap-3 mb-4">
+          <img src="<%= (listing.images && listing.images.length > 0) ? listing.images[0].url : 'https://images.unsplash.com/photo-1566073771259-6a8506099945' %>" class="rounded-3 shadow-sm" style="width: 100px; height: 80px; object-fit: cover;">
+          <div>
+            <span class="badge bg-danger-subtle text-danger text-capitalize fs-xxs"><%= listing.category || 'Villa' %></span>
+            <h6 class="fw-bold mb-1 text-truncate" style="max-width: 180px;"><%= listing.title %></h6>
+            <small class="text-muted"><i class="fa-solid fa-location-dot text-danger me-1"></i> <%= listing.location %>, <%= listing.country %></small>
+          </div>
+        </div>
+
+        <!-- DATES & GUESTS -->
+        <div class="bg-light p-3 rounded-3 mb-4">
+          <div class="d-flex justify-content-between mb-2">
+            <span class="small text-muted">Dates</span>
+            <span class="small fw-bold"><%= new Date(bookingData.checkIn).toLocaleDateString("en-IN", { month: 'short', day: 'numeric' }) %> – <%= new Date(bookingData.checkOut).toLocaleDateString("en-IN", { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span class="small text-muted">Guests</span>
+            <span class="small fw-bold"><%= bookingData.guests %> <%= bookingData.guests === 1 ? 'Guest' : 'Guests' %></span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span class="small text-muted">Duration</span>
+            <span class="small fw-bold"><%= bookingData.nights %> <%= bookingData.nights === 1 ? 'Night' : 'Nights' %></span>
+          </div>
+        </div>
+
+        <!-- PRICE BREAKDOWN -->
+        <h6 class="fw-bold mb-3">Price Details</h6>
+        
+        <div class="d-flex justify-content-between small text-muted mb-2">
+          <span>₹ <%= bookingData.nightlyRate.toLocaleString("en-IN") %> × <%= bookingData.nights %> night<%= bookingData.nights > 1 ? 's' : '' %></span>
+          <span>₹ <%= bookingData.basePrice.toLocaleString("en-IN") %></span>
+        </div>
+
+        <div class="d-flex justify-content-between small text-muted mb-2">
+          <span>Cleaning fee</span>
+          <span>₹ <%= bookingData.cleaningFee.toLocaleString("en-IN") %></span>
+        </div>
+
+        <div class="d-flex justify-content-between small text-muted mb-2">
+          <span>Wanderlust service fee</span>
+          <span>₹ <%= bookingData.serviceFee.toLocaleString("en-IN") %></span>
+        </div>
+
+        <div class="d-flex justify-content-between small text-muted mb-3">
+          <span>Taxes & GST (18%)</span>
+          <span>₹ <%= bookingData.tax.toLocaleString("en-IN") %></span>
+        </div>
+
+        <div class="d-flex justify-content-between pt-3 border-top fs-5 fw-bolder text-dark">
+          <span>Total Amount (INR)</span>
+          <span class="text-danger">₹ <%= bookingData.totalPrice.toLocaleString("en-IN") %></span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // Live Credit Card input listeners
+  const numIn = document.getElementById('cardNumberInput');
+  const nameIn = document.getElementById('cardNameInput');
+  const expIn = document.getElementById('cardExpiryInput');
+
+  const numDisp = document.getElementById('cardDisplayNumber');
+  const nameDisp = document.getElementById('cardDisplayName');
+  const expDisp = document.getElementById('cardDisplayExpiry');
+
+  if (numIn) {
+    numIn.addEventListener('input', (e) => {
+      let val = e.target.value.replace(/\D/g, '').substring(0, 16);
+      val = val != '' ? val.match(/.{1,4}/g).join(' ') : '•••• •••• •••• 4242';
+      e.target.value = val !== '•••• •••• •••• 4242' ? val : '';
+      numDisp.innerText = val;
+    });
+  }
+
+  if (nameIn) {
+    nameIn.addEventListener('input', (e) => {
+      nameDisp.innerText = e.target.value.toUpperCase() || 'GUEST TRAVELER';
+    });
+  }
+
+  if (expIn) {
+    expIn.addEventListener('input', (e) => {
+      let val = e.target.value.replace(/\D/g, '').substring(0, 4);
+      if (val.length >= 2) val = val.substring(0, 2) + '/' + val.substring(2);
+      e.target.value = val;
+      expDisp.innerText = val || '12/28';
+    });
+  }
+</script>

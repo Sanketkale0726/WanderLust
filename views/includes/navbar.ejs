@@ -1,0 +1,122 @@
+<nav class="navbar navbar-expand-lg sticky-top main-navbar shadow-sm">
+  <div class="container-fluid px-3 px-lg-5">
+    
+    <!-- BRAND LOGO -->
+    <a class="navbar-brand d-flex align-items-center gap-2 brand-logo" href="/listings">
+      <i class="fa-solid fa-compass brand-icon"></i>
+      <span class="brand-text">wanderlust</span>
+    </a>
+
+    <!-- SEARCH BAR PILL (CENTER) -->
+    <div class="search-bar-container d-none d-md-flex align-items-center">
+      <form action="/listings" method="GET" class="search-form d-flex align-items-center">
+        
+        <div class="search-input-group">
+          <label class="search-label">Anywhere</label>
+          <input type="text" name="search" class="search-input" placeholder="Search destinations..." value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
+        </div>
+
+        <div class="search-divider"></div>
+
+        <div class="search-input-group">
+          <label class="search-label">Budget</label>
+          <input type="number" name="maxPrice" class="search-input price-input" placeholder="Max ₹" value="<%= typeof maxPrice !== 'undefined' ? maxPrice : '' %>">
+        </div>
+
+        <div class="search-divider"></div>
+
+        <div class="search-input-group">
+          <label class="search-label">Who</label>
+          <input type="number" name="guests" class="search-input guests-input" placeholder="Guests" min="1" value="<%= typeof guestsCount !== 'undefined' ? guestsCount : '' %>">
+        </div>
+
+        <button type="submit" class="search-btn" title="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+
+      </form>
+    </div>
+
+    <!-- RIGHT ACTION BUTTONS & USER DROPDOWN -->
+    <div class="d-flex align-items-center gap-2 gap-md-3">
+
+      <!-- Host Action Link -->
+      <% if (currentUser && (currentUser.role === 'owner' || currentUser.role === 'admin')) { %>
+        <a href="/listings/new" class="nav-host-btn d-none d-sm-inline-block">
+          <i class="fa-solid fa-plus me-1"></i> Add Stay
+        </a>
+      <% } else if (currentUser) { %>
+        <a href="/profile" class="nav-host-btn d-none d-sm-inline-block">
+          Switch to Host
+        </a>
+      <% } else { %>
+        <a href="/login" class="nav-host-btn d-none d-sm-inline-block">
+          Airbnb your home
+        </a>
+      <% } %>
+
+      <!-- WISHLIST ICON -->
+      <% if (currentUser) { %>
+        <a href="/wishlist" class="btn-icon-nav position-relative" title="My Wishlist">
+          <i class="fa-regular fa-heart"></i>
+          <span class="wishlist-badge badge rounded-pill bg-danger <%= (userWishlist && userWishlist.length > 0) ? '' : 'd-none' %>" id="navWishlistBadge">
+            <%= (userWishlist && userWishlist.length) || 0 %>
+          </span>
+        </a>
+      <% } %>
+
+      <!-- DARK / LIGHT THEME TOGGLE -->
+      <button class="btn-icon-nav" id="themeToggleBtn" title="Toggle Theme">
+        <i class="fa-regular fa-moon" id="themeIcon"></i>
+      </button>
+
+      <!-- USER PROFILE DROPDOWN -->
+      <div class="dropdown">
+        <button class="btn user-menu-btn d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fa-solid fa-bars menu-bars"></i>
+          <div class="user-avatar-mini">
+            <i class="fa-solid fa-user"></i>
+          </div>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end user-dropdown-card shadow border-0 rounded-4 mt-2 p-2">
+          <% if (!currentUser) { %>
+            <li><a class="dropdown-item fw-semibold py-2 rounded-3" href="/login"><i class="fa-solid fa-arrow-right-to-bracket me-2 text-danger"></i> Log in</a></li>
+            <li><a class="dropdown-item py-2 rounded-3 text-muted" href="/signup"><i class="fa-solid fa-user-plus me-2"></i> Sign up</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item py-2 rounded-3" href="/forgot"><i class="fa-solid fa-key me-2 text-secondary"></i> Forgot Password</a></li>
+          <% } else { %>
+            <li class="px-3 py-2 border-bottom mb-1">
+              <div class="fw-bold text-truncate"><%= currentUser.username %></div>
+              <small class="text-muted"><%= currentUser.email %></small>
+              <div><span class="badge bg-danger-subtle text-danger text-uppercase fs-xxs mt-1"><%= currentUser.role %></span></div>
+            </li>
+            <li><a class="dropdown-item py-2 rounded-3" href="/profile"><i class="fa-solid fa-id-card me-2 text-primary"></i> My Profile</a></li>
+            <li><a class="dropdown-item py-2 rounded-3" href="/bookings/my-trips"><i class="fa-solid fa-suitcase-rolling me-2 text-success"></i> My Trips</a></li>
+            <li><a class="dropdown-item py-2 rounded-3" href="/wishlist"><i class="fa-solid fa-heart me-2 text-danger"></i> Wishlists</a></li>
+            <% if (currentUser.role === 'owner' || currentUser.role === 'admin') { %>
+              <li><hr class="dropdown-divider"></li>
+              <li class="dropdown-header text-uppercase fs-xxs fw-bold text-muted">Host Management</li>
+              <li><a class="dropdown-item py-2 rounded-3" href="/listings/new"><i class="fa-solid fa-plus me-2 text-danger"></i> Create New Listing</a></li>
+              <li><a class="dropdown-item py-2 rounded-3" href="/bookings/manage"><i class="fa-solid fa-chart-line me-2 text-info"></i> Host Dashboard</a></li>
+            <% } %>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item py-2 rounded-3 text-danger" href="/logout"><i class="fa-solid fa-right-from-bracket me-2"></i> Log out</a></li>
+          <% } %>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- MOBILE SEARCH BAR -->
+  <div class="container-fluid px-3 d-md-none mt-2 pb-2">
+    <form action="/listings" method="GET" class="d-flex gap-2">
+      <div class="input-group search-mobile-group">
+        <span class="input-group-text bg-transparent border-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+        <input type="text" name="search" class="form-control border-0 bg-transparent" placeholder="Search destinations..." value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
+        <button class="btn btn-danger rounded-pill px-3 m-1" type="submit">Go</button>
+      </div>
+    </form>
+  </div>
+</nav>

@@ -1,0 +1,78 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container py-5">
+  
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4 pb-3 border-bottom">
+    <div>
+      <h2 class="fw-bold mb-1">My Wishlist ❤️</h2>
+      <p class="text-muted small mb-0">Your saved luxury escapes and dream vacations.</p>
+    </div>
+    <span class="badge bg-danger rounded-pill px-3 py-2 fs-6">
+      <%= wishlist ? wishlist.length : 0 %> Saved
+    </span>
+  </div>
+
+  <% if (!wishlist || wishlist.length === 0) { %>
+    <div class="text-center py-5 empty-state-box my-4 rounded-4 shadow-sm">
+      <i class="fa-solid fa-heart-crack fa-3x text-muted mb-3"></i>
+      <h4 class="fw-bold">Your wishlist is empty</h4>
+      <p class="text-muted">As you search, tap the heart icon on any stay to save your favorite places to stay.</p>
+      <a href="/listings" class="btn btn-danger rounded-pill px-5 py-2 mt-2 fw-semibold">Discover Stays</a>
+    </div>
+  <% } else { %>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="wishlistGrid">
+      <% for(let item of wishlist) { %>
+        <% 
+          const firstImage = (item.images && item.images.length > 0) 
+            ? item.images[0].url 
+            : 'https://images.unsplash.com/photo-1566073771259-6a8506099945';
+        %>
+
+        <div class="col wishlist-col" id="wishlist_item_<%= item._id %>">
+          <div class="card h-100 property-card border-0 shadow-sm rounded-4 overflow-hidden position-relative">
+            
+            <!-- WISHLIST HEART BUTTON (TOGGLES REMOVE) -->
+            <button class="wishlist-heart-btn favorited" 
+                    data-listing-id="<%= item._id %>"
+                    title="Remove from wishlist">
+              <i class="fa-solid fa-heart text-danger"></i>
+            </button>
+
+            <!-- IMAGE -->
+            <a href="/listings/<%= item._id %>" class="property-link">
+              <div class="card-img-wrapper">
+                <img src="<%= firstImage %>" class="card-img-top property-image" alt="<%= item.title %>">
+                <div class="image-overlay-gradient"></div>
+              </div>
+            </a>
+
+            <!-- BODY -->
+            <div class="card-body p-3 d-flex flex-column">
+              <h6 class="card-title fw-bold text-truncate mb-1">
+                <a href="/listings/<%= item._id %>" class="text-decoration-none text-reset"><%= item.title %></a>
+              </h6>
+              <p class="text-muted small text-truncate mb-2">
+                <i class="fa-solid fa-location-dot text-danger opacity-75 me-1"></i><%= item.location %>, <%= item.country %>
+              </p>
+
+              <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
+                <div>
+                  <span class="fs-5 fw-bold text-dark">₹ <%= item.price.toLocaleString("en-IN") %></span>
+                  <span class="text-muted small"> / night</span>
+                </div>
+                <a href="/listings/<%= item._id %>" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                  Book
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      <% } %>
+    </div>
+
+  <% } %>
+
+</div>
